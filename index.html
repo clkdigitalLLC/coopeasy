@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coop Easy Journal – Simple Egg & Hen Tracking App</title>
+    <meta name="description" content="Coop Easy Journal — the simple daily journal for backyard chicken keepers who name their hens. Track eggs, hens, medications, and coop chores. Free on Android.">
+
+    <style>
+        /* ─────────────────────────────────────────────────────────────
+           Coop Easy Journal — landing page
+           Palette pulled from the app banner:
+             Olive green:  #6B7B3F  (primary surfaces)
+             Deep olive:   #4F5A2E  (accents / hero bg)
+             Terracotta:   #C8693E  (hen orange — CTA highlights)
+             Warm cream:   #F4EAD0  (text on dark, card surfaces)
+             Soft sand:    #FAF6E8  (body bg)
+             Charcoal:     #2D2A22  (body text)
+           ───────────────────────────────────────────────────────────── */
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                         Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #2D2A22;
+            background: #FAF6E8;
+            line-height: 1.6;
+        }
+
+        a { color: #6B7B3F; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ── Top bar ───────────────────────────────────────────────── */
+        .topbar {
+            background: #4F5A2E;
+            color: #F4EAD0;
+            padding: 10px 0;
+            font-size: 14px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        .topbar strong { color: #FFD089; }
+
+        /* ── Hero ──────────────────────────────────────────────────── */
+        .hero {
+            background: linear-gradient(180deg, #6B7B3F 0%, #4F5A2E 100%);
+            color: #F4EAD0;
+            padding: 48px 0 56px;
+            text-align: center;
+        }
+        .hero-banner {
+            display: block;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto 28px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+        }
+        .hero h1 {
+            font-size: clamp(28px, 5vw, 44px);
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+        .hero h1 em {
+            color: #FFD089;
+            font-style: italic;
+            font-weight: 700;
+        }
+        .hero p {
+            font-size: 18px;
+            max-width: 640px;
+            margin: 0 auto 28px;
+            color: #E8DFC0;
+        }
+        .cta-row {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: #C8693E;
+            color: #FFF;
+        }
+        .btn-primary:hover { background: #D4754A; }
+        .btn-secondary {
+            background: transparent;
+            color: #F4EAD0;
+            border: 2px solid #F4EAD0;
+        }
+        .btn-secondary:hover { background: rgba(244, 234, 208, 0.1); }
+
+        /* ── Stats strip ───────────────────────────────────────────── */
+        .stats {
+            background: #F4EAD0;
+            padding: 28px 0;
+            border-bottom: 1px solid #DCD0AC;
+        }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            text-align: center;
+        }
+        .stat-num {
+            font-size: 28px;
+            font-weight: 700;
+            color: #C8693E;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 13px;
+            color: #6B6A5A;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+        @media (max-width: 600px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* ── Section common ────────────────────────────────────────── */
+        section { padding: 64px 0; }
+        section.alt { background: #F4EAD0; }
+
+        .eyebrow {
+            text-align: center;
+            color: #C8693E;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+        h2 {
+            text-align: center;
+            font-size: clamp(26px, 4vw, 36px);
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        h2 em {
+            color: #C8693E;
+            font-style: italic;
+        }
+        .section-lede {
+            text-align: center;
+            max-width: 640px;
+            margin: 0 auto 40px;
+            color: #5A5648;
+            font-size: 17px;
+        }
+
+        /* ── Feature grid ──────────────────────────────────────────── */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .feature {
+            background: #FFF;
+            padding: 28px 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .feature h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #2D2A22;
+        }
+        .feature p {
+            color: #5A5648;
+            font-size: 15px;
+        }
+
+        /* ── Hen Profile detail section ────────────────────────────── */
+        .detail-list {
+            max-width: 720px;
+            margin: 0 auto;
+            display: grid;
+            gap: 18px;
+        }
+        .detail-item {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            background: #FFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .detail-icon {
+            font-size: 28px;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+        .detail-item h4 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .detail-item p {
+            color: #5A5648;
+            font-size: 15px;
+        }
+
+        /* ── How it works ──────────────────────────────────────────── */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 28px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        .step {
+            text-align: center;
+            padding: 24px 16px;
+        }
+        .step-num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 48px;
+            height: 48px;
+            background: #C8693E;
+            color: #FFF;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+        .step h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .step p {
+            color: #5A5648;
+            font-size: 15px;
+        }
+
+        /* ── PRO card ──────────────────────────────────────────────── */
+        .pro-card {
+            background: linear-gradient(135deg, #6B7B3F 0%, #4F5A2E 100%);
+            color: #F4EAD0;
+            border-radius: 16px;
+            padding: 40px 32px;
+            max-width: 640px;
+            margin: 0 auto;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+        }
+        .pro-price {
+            font-size: 48px;
+            font-weight: 700;
+            color: #FFD089;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        .pro-sub {
+            font-size: 14px;
+            color: #E8DFC0;
+            margin-bottom: 24px;
+        }
+        .pro-features {
+            list-style: none;
+            text-align: left;
+            max-width: 360px;
+            margin: 0 auto 28px;
+        }
+        .pro-features li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(244, 234, 208, 0.15);
+            font-size: 16px;
+        }
+        .pro-features li::before {
+            content: "✓ ";
+            color: #FFD089;
+            font-weight: 700;
+            margin-right: 6px;
+        }
+        .pro-features li:last-child { border-bottom: none; }
+
+        /* ── Footer ────────────────────────────────────────────────── */
+        footer {
+            background: #2D2A22;
+            color: #C8C3AE;
+            padding: 36px 0 28px;
+            text-align: center;
+            font-size: 14px;
+        }
+        footer .brand {
+            font-size: 16px;
+            color: #F4EAD0;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        footer .brand-icon { font-size: 22px; margin-right: 6px; vertical-align: middle; }
+        footer a { color: #FFD089; }
+    </style>
+</head>
+<body>
+
+    <!-- ── Top bar ─────────────────────────────────────────────── -->
+    <div class="topbar">
+        <strong>Free</strong> · Android App
+    </div>
+
+    <!-- ── Hero ────────────────────────────────────────────────── -->
+    <header class="hero">
+        <div class="container">
+            <img src="coopeasy_banner.jpg"
+                 alt="Coop Easy Journal — Simple Daily Journal for Backyard Chickens"
+                 class="hero-banner">
+
+            <h1>Backyard chicken keeping,<br>made <em>simple</em></h1>
+            <p>The daily journal app built for chicken people who name their hens. Track eggs, hens, medication, feed, and the daily chores — everything you need, nothing you don't.</p>
+
+            <div class="cta-row">
+                <a href="https://play.google.com/store/apps/details?id=com.clkdigital.coopeasyjournal" class="btn btn-primary">📲 Download on Google Play</a>
+                <a href="#features" class="btn btn-secondary">See features ↓</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Stats ───────────────────────────────────────────────── -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-row">
+                <div>
+                    <span class="stat-num">🐔 Free</span>
+                    <span class="stat-label">To Download</span>
+                </div>
+                <div>
+                    <span class="stat-num">1–3</span>
+                    <span class="stat-label">Coops Supported</span>
+                </div>
+                <div>
+                    <span class="stat-num">$3.99</span>
+                    <span class="stat-label">PRO — One Time</span>
+                </div>
+                <div>
+                    <span class="stat-num">No</span>
+                    <span class="stat-label">Subscription Ever</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Features ────────────────────────────────────────────── -->
+    <section id="features">
+        <div class="container">
+            <p class="eyebrow">What it does</p>
+            <h2>Everything a chicken keeper <em>actually needs</em></h2>
+
+            <div class="feature-grid">
+                <div class="feature">
+                    <span class="feature-icon">🥚</span>
+                    <h3>Weekly Egg Log</h3>
+                    <p>Tap-to-log weekly grid. See at a glance who laid what, who's slowing down, and how the whole flock is doing.</p>
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">🐔</span>
+                    <h3>Hen Profiles</h3>
+                    <p>Give every hen her own page — name, breed, hatch date, egg color, leg band, her story, personality, and a photo.</p>
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">📋</span>
+                    <h3>Daily Coop Journal</h3>
+                    <p>Simple checklist for daily chores — water, feed, treats, nest boxes, predator check, and how the flock is looking.</p>
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">💊</span>
+                    <h3>Medication Records</h3>
+                    <p>Log treatments per bird or whole flock. Egg withdrawal periods show up in the egg log so you never collect a withdrawal egg by mistake.</p>
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">🏆</span>
+                    <h3>Wall of Fame</h3>
+                    <p>Hen of the Week, Hen of the Month, Best Hen of All Time — automatic awards for your top layers.</p>
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">🔒</span>
+                    <h3>Your Data is Yours</h3>
+                    <p>Everything stays on your phone. No accounts, no cloud, no ads. PRO users can back up and restore anytime.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Hen Profile detail ──────────────────────────────────── -->
+    <section class="alt">
+        <div class="container">
+            <p class="eyebrow">Hen Profiles</p>
+            <h2>Know every hen, <em>track every egg</em></h2>
+            <p class="section-lede">Every hen has a story. Give her a profile and that information travels with every egg she lays — so you always know who's who, even years later.</p>
+
+            <div class="detail-list">
+                <div class="detail-item">
+                    <span class="detail-icon">🏷️</span>
+                    <div>
+                        <h4>Name &amp; Breed</h4>
+                        <p>From Rhode Island Reds to Silkies — pick from a curated list or add your own. Optional names so it's fine if she hasn't earned one yet.</p>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-icon">📖</span>
+                    <div>
+                        <h4>Her Story</h4>
+                        <p>Where she came from, distinguishing features, personality, favorite treats — the small things that make her her.</p>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-icon">❤️</span>
+                    <div>
+                        <h4>Active · Retired · At Rest</h4>
+                        <p>Hens move through life. Retire her from the egg log when she's done laying, or mark her At Rest when her time comes — her record stays.</p>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-icon">📸</span>
+                    <div>
+                        <h4>Photos (PRO)</h4>
+                        <p>Take a photo with the camera or pick from your gallery. A small portrait at the top of her profile and on the hen list.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── How It Works ────────────────────────────────────────── -->
+    <section>
+        <div class="container">
+            <p class="eyebrow">How it works</p>
+            <h2>Three steps to a <em>well-kept flock</em></h2>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <h3>Set up your coop</h3>
+                    <p>Name your coop, add your hens, and you're ready to log. No accounts, no setup wizard — open the app and go.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <h3>Log eggs &amp; chores daily</h3>
+                    <p>A tap or two per hen for eggs. Quick checklist for the day's coop chores. Takes a minute, not ten.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <h3>Watch patterns over time</h3>
+                    <p>Browse weekly history, see your top layers, spot trends. Catch problems early. Watch your flock thrive.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── PRO ─────────────────────────────────────────────────── -->
+    <section class="alt">
+        <div class="container">
+            <p class="eyebrow">PRO Upgrade</p>
+            <h2>For the <em>growing flock</em></h2>
+            <p class="section-lede">The free version covers a small flock perfectly. PRO unlocks everything you need as your backyard chicken keeping grows into something bigger.</p>
+
+            <div class="pro-card">
+                <div class="pro-price">$3.99</div>
+                <div class="pro-sub">One-time purchase · No subscription, ever</div>
+
+                <ul class="pro-features">
+                    <li>Up to 3 coops</li>
+                    <li>20 named hens per coop</li>
+                    <li>Hen photos (camera &amp; gallery)</li>
+                    <li>Coop journal photos</li>
+                    <li>Data export &amp; restore</li>
+                    <li>Dark mode (coming soon)</li>
+                </ul>
+
+                <a href="https://play.google.com/store/apps/details?id=com.clkdigital.coopeasyjournal" class="btn btn-primary">📲 Get PRO on Google Play</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Footer ──────────────────────────────────────────────── -->
+    <footer>
+        <div class="container">
+            <div class="brand">
+                <span class="brand-icon">🐔</span>Coop Easy Journal
+            </div>
+            <p>© 2026 CLK Digital Studio LLC ·
+                <a href="https://play.google.com/store/apps/details?id=com.clkdigital.coopeasyjournal">Google Play ↗</a>
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
